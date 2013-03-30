@@ -1,0 +1,7 @@
+auto-save-list
+elpa
+*.elc
+*.dat
+org-clock-save.el
+*~
+.org-id-locations
