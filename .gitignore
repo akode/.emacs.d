@@ -1,4 +1,6 @@
 auto-save-list
+packages
+request
 elpa
 *.elc
 *.dat
