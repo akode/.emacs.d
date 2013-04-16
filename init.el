@@ -1,17 +1,22 @@
+;; two variables are defined in .emacs
+;; my-gcal-priv : address of the my google mail calendar
+;; my-org-directory : path to my org files
+
 (server-start)
 
 ;; Load paths
 (let ((default-directory "~/.emacs.d/"))
-  (normal-top-level-add-to-load-path '("." "packages/git-emacs" "packages/jinja2-mode" "packages/python-mode" "packages/pymacs" "packages/ropemacs")))
-
+  (normal-top-level-add-to-load-path '("." "packages/python-mode" "packages/pymacs" "packages/ropemacs" "packages/matlab-emacs")))
+;; if these packages are not present just comment Python and matlab-mode out
 
 ;; Packages
 (defvar sys-packages
-  '(auctex auto-complete less-css-mode smartparens yasnippet markdown-mode calfw)
+  '(auctex auto-complete less-css-mode smartparens yasnippet markdown-mode calfw ess jinja2-mode)
   "List of packages installed via packages system from elpa and melpa.")
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-			  ("melpa" . "http://melpa.milkbox.net/packages/")))
+			  ("melpa" . "http://melpa.milkbox.net/packages/")
+			  ("SC"   . "http://joseito.republika.pl/sunrise-commander/")))
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
@@ -30,13 +35,19 @@
 ;; sound
 (setq ring-bell-function #'ignore)
 
+;;;;;;;;;;;;;;;;;;;;
 ;; keyboard modifications
 (setq mac-option-modifier nil)
 (setq mac-command-modifier 'meta)
 (global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cl" 'org-store-link)
 (global-set-key (kbd "C-x f") 'find-file-at-point)
-(global-set-key "\C-xg" 'magit-status)
+(global-set-key (kbd "\C-x g") 'magit-status)
 
+;;;;;;;;;;;;;;;;;;;;
+;; Timestamp (add "Time-stamp: <>" in one of the first 8 lines of the file)
+(add-hook 'before-save-hook 'time-stamp)
+(setq time-stamp-pattern nil)
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Spellcheck
@@ -44,29 +55,24 @@
 				       ("\\\\glspl" ispell-tex-arg-end)
 				       ("\\\\citep" ispell-tex-arg-end)
 				       ("\\\\autoref" ispell-tex-arg-end)))
-(add-hook 'rst-mode 'flyspell-mode)
+(add-hook 'rst-mode-hook 'flyspell-mode)
+(add-hook 'latex-mode-hook 'flyspell-mode)
+
+;;;;;;;;;;;;;;;;;;;;
+;; Matlab-mode
+(require 'matlab-load)
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Python
-(autoload 'python-mode "python-mode" "Python mode." t)
-(add-hook 'python-mode-hook 'linum-mode)
-(eval-after-load "python-mode"
-  '(progn
-     (setq-default py-shell-name "ipython")
-     (setq-default py-which-bufname "IPython")
-))
-;; pymacs
-(autoload 'pymacs-apply "pyacs")
-(autoload 'pymacs-call "pymacs")
-(autoload 'pymacs-eval "pymacs" nil t)
-(autoload 'pymacs-exec "pymacs" nil t)
-(autoload 'pymacs-load "pymacs" nil t)
-(autoload 'pymacs-autoload "pymacs")
-(setq py-load-pymacs-p t)
+(load "python-cust.el")
 
-;; ropemacs
-(require 'pymacs)
-(pymacs-load "ropemacs" "rope-")
+;;;;;;;;;;;;;;;;;;;;
+;; Markdown mode
+(autoload 'markdown-mode "markdown-mode" "Markdown mode." t)
+
+;;;;;;;;;;;;;;;;;;;;
+;; ESS
+(require 'ess-site)
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Jinja2
@@ -120,19 +126,22 @@
     (cfw:ical-create-source "gcal" my-gcal-priv "IndianRed")
     )))
 
-(load-file "~/.emacs.d/calendar-cust.el")
+(load "calendar-cust.el")
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; OrgMode
 (autoload 'org-latex "org-latex" t)
-(setq org-directory "~/Documents/org-files")
+(setq org-directory my-org-directory)
 (setq org-default-notes-file (concat org-directory "/notes.org"))
 (setq diary-file (concat org-directory "/.diary"))
-(setq org-agenda-files '("~/Documents/org-files"))
+(setq org-agenda-files (list my-org-directory))
 
 (setq org-modules (quote (org-habit
-			  org-bibtex)))
+			  org-bibtex
+			  org-mac-link-grabber)))
 
+(add-hook 'org-mode-hook (lambda ()
+			   (define-key org-mode-map (kbd "C-c g") 'omlg-grab-link)))
 (add-hook 'message-mode-hook 'orgtbl-mode 'append)
 (setq org-treat-S-cursor-todo-selection-as-state-change nil)
 (setq org-log-done 'time)
@@ -179,16 +188,13 @@ Skips capture tasks."
 (add-hook 'org-clock-out-hook 'bh/remove-empty-drawer-on-clock-out 'append)
 
 ;;;;;;;;;;;;;;;;;;;;
-;; GIT
-(require 'git-emacs)
-
-;;;;;;;;;;;;;;;;;;;;
 ;; AucTeX
 (setq TeX-PDF-mode t)
 (setq LaTeX-command "latex --synctex=1")
 (setq TeX-auto-global "~/emacs-files/auto")
-(setq TeX-view-program-list (quote (("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b"))))
-(setq TeX-view-program-selection (quote (((output-dvi style-pstricks) "dvips and gv") (output-dvi "xdvi") (output-pdf "Skim") (output-html "xdg-open"))))
+(when (eq system-type 'darwin)
+  (setq TeX-view-program-list (quote (("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b"))))
+  (setq TeX-view-program-selection (quote (((output-dvi style-pstricks) "dvips and gv") (output-dvi "xdvi") (output-pdf "Skim") (output-html "xdg-open")))))
 
 (setq TeX-parse-self t)
 (setq TeX-auto-save t)
