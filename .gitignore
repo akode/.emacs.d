@@ -1,5 +1,4 @@
 auto-save-list
-packages
 request
 elpa
 *.elc
@@ -7,3 +6,4 @@ elpa
 org-clock-save.el
 *~
 .org-id-locations
+packages/matlab-emacs

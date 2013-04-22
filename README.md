@@ -1,6 +1,6 @@
 # My Emacs Configuration #
 
-It uses `package.el` to install suplementary modes. Therefore it requires Emacs 24! As I'm mostly using Mac my configuration might contain some Mac specific modifications that don't work on other systems. I will check this out soon.
+It uses `package.el` to install suplementary modes. Therefore it requires Emacs 24! As I'm mostly using Mac my configuration might contain some Mac specific modifications that don't work on other systems. I will check this soon.
 
 All customizations are made in `init.el`. The `.emacs` file is just used for loading `init.el` and setting some variables. This is done by
 
@@ -14,10 +14,11 @@ All customizations are made in `init.el`. The `.emacs` file is just used for loa
 * AucTeX
 * OrgMode
 * Smartparens
-* Python-mode
+* Elpy
 * Jinja2-mode
 * Auto-complete
 * Ido-mode
-* Magit
+* Egg
 * Calfw
 * ESS
+* Matlab-emacs (not in package manager)

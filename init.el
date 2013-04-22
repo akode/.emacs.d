@@ -6,12 +6,12 @@
 
 ;; Load paths
 (let ((default-directory "~/.emacs.d/"))
-  (normal-top-level-add-to-load-path '("." "packages/python-mode" "packages/pymacs" "packages/ropemacs" "packages/matlab-emacs")))
-;; if these packages are not present just comment Python and matlab-mode out
+  (normal-top-level-add-to-load-path '("." "packages/matlab-emacs")))
+;; if these packages are not present just comment matlab-mode out
 
 ;; Packages
 (defvar sys-packages
-  '(auctex auto-complete less-css-mode smartparens yasnippet markdown-mode calfw ess jinja2-mode)
+  '(auctex auto-complete less-css-mode smartparens yasnippet markdown-mode calfw ess jinja2-mode egg elpy)
   "List of packages installed via packages system from elpa and melpa.")
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
@@ -24,6 +24,7 @@
   (when (not (package-installed-p p))
     (package-install p)))
 
+;;;;;;;;;;;;;;;;;;;;
 ;; visual modifications
 (setq inhibit-startup-message t)
 (global-visual-line-mode 1)
@@ -42,7 +43,6 @@
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key (kbd "C-x f") 'find-file-at-point)
-(global-set-key (kbd "\C-x g") 'magit-status)
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Timestamp (add "Time-stamp: <>" in one of the first 8 lines of the file)
@@ -56,7 +56,13 @@
 				       ("\\\\citep" ispell-tex-arg-end)
 				       ("\\\\autoref" ispell-tex-arg-end)))
 (add-hook 'rst-mode-hook 'flyspell-mode)
-(add-hook 'latex-mode-hook 'flyspell-mode)
+(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+(add-hook 'markdown-mode-hook 'flyspell-mode)
+
+;;;;;;;;;;;;;;;;;;;;
+;; Egg - Emacs got GIT
+(delete 'Git vc-handled-backends)
+(require 'egg)
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Matlab-mode
@@ -64,11 +70,13 @@
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Python
-(load "python-cust.el")
+(elpy-enable)
+(elpy-use-ipython)
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Markdown mode
 (autoload 'markdown-mode "markdown-mode" "Markdown mode." t)
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; ESS
@@ -101,7 +109,7 @@
      (setf yas/indent-line nil)
 ))
 
-(add-hook 'latex-mode-hook 'yas-minor-mode)
+(add-hook 'LaTeX-mode-hook 'yas-minor-mode)
 (add-hook 'rst-mode-hook 'yas-minor-mode)
 (add-hook 'html-mode-hook 'yas-minor-mode)
 
@@ -126,7 +134,7 @@
     (cfw:ical-create-source "gcal" my-gcal-priv "IndianRed")
     )))
 
-(load "calendar-cust.el")
+(load "calendar-cust")
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; OrgMode
@@ -190,44 +198,25 @@ Skips capture tasks."
 ;;;;;;;;;;;;;;;;;;;;
 ;; AucTeX
 (setq TeX-PDF-mode t)
-(setq LaTeX-command "latex --synctex=1")
 (setq TeX-auto-global "~/emacs-files/auto")
-(when (eq system-type 'darwin)
-  (setq TeX-view-program-list (quote (("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b"))))
-  (setq TeX-view-program-selection (quote (((output-dvi style-pstricks) "dvips and gv") (output-dvi "xdvi") (output-pdf "Skim") (output-html "xdg-open")))))
+(load "auctex-cust")
 
-(setq TeX-parse-self t)
-(setq TeX-auto-save t)
-(setq-default TeX-master nil)
+;;;;;;;;;;;;;;;;;;;;
+;; toggle fullscreen function (tested only on Mac)
+(defun toggle-fullscreen ()
+  "Toggle full screen"
+  (interactive)
+  (set-frame-parameter
+     nil 'fullscreen
+     (when (not (frame-parameter nil 'fullscreen)) 'fullboth)))
 
-;; AucTeX with Biber
-(defun TeX-run-Biber (name command file)
-  "Create a process for NAME using COMMAND to format FILE with Biber." 
-  (let ((process (TeX-run-command name command file)))
-    (setq TeX-sentinel-function 'TeX-Biber-sentinel)
-    (if TeX-process-asynchronous
-	process
-      (TeX-synchronous-sentinel name file process))))
+;;;;;;;;;;;;;;;;;;;;
+;; byte compile elisp files on save, but only if a byte compiled version already exists
+(defun byte-compile-current-buffer ()
+  "`byte-compile' current buffer if it's emacs-lisp-mode and compiled file exists."
+  (interactive)
+  (when (and (eq major-mode 'emacs-lisp-mode)
+             (file-exists-p (byte-compile-dest-file buffer-file-name)))
+    (byte-compile-file buffer-file-name)))
 
-(defun TeX-Biber-sentinel (process name)
-  "Cleanup TeX output buffer after running Biber."
-  (goto-char (point-max))
-  (cond
-   ;; Check whether Biber reports any warnings or errors.
-   ((re-search-backward (concat
-			 "^(There \\(?:was\\|were\\) \\([0-9]+\\) "
-			 "\\(warnings?\\|error messages?\\))") nil t)
-    ;; Tell the user their number so that she sees whether the
-    ;; situation is getting better or worse.
-    (message (concat "Biber finished with %s %s. "
-		     "Type `%s' to display output.")
-	     (match-string 1) (match-string 2)
-	     (substitute-command-keys
-	      "\\\\[TeX-recenter-output-buffer]")))
-   (t
-    (message (concat "Biber finished successfully. "
-		     "Run LaTeX again to get citations right."))))
-  (setq TeX-command-next TeX-command-default))
-(eval-after-load "tex"
-  '(add-to-list 'TeX-command-list '("Biber" "biber %s" TeX-run-Biber nil t :help "Run Biber"))
-  )
+(add-hook 'after-save-hook 'byte-compile-current-buffer)

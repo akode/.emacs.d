@@ -3,7 +3,7 @@
 
 ;; Holiday settings
 (setq holiday-general-holidays
-      '((holiday-fixed 1 1 "Neujahr")
+      '((holiday-fixed 1 1 "neujahr")
         (holiday-fixed 5 1 "1. Mai")
         (holiday-fixed 10 3 "Tag der Deutschen Einheit")))
 
@@ -35,4 +35,4 @@
       )
 
 (setq calendar-holidays
-      (append general-holidays christian-holidays))
+      (append holiday-general-holidays holiday-christian-holidays))
