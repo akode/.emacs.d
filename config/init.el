@@ -24,7 +24,7 @@
 
 ;; Packages
 (defvar sys-packages
-  '(auctex auto-complete smartparens yasnippet markdown-mode less-css-mode coffee-mode calfw ess egg elpy scala-mode2)
+  '(auctex auto-complete smartparens yasnippet markdown-mode less-css-mode coffee-mode egg elpy scala-mode2)
   "List of packages installed via packages system from elpa and melpa.")
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
@@ -43,7 +43,7 @@
 (global-visual-line-mode 1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
-(set-cursor-color 'red)
+;(set-cursor-color 'red)
 (show-paren-mode t)
 
 ;; sound
@@ -101,7 +101,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; org-pandoc
-(require 'ox-pandoc)
+;(require 'ox-pandoc)
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Python

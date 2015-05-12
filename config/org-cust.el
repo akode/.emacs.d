@@ -8,6 +8,12 @@
       (quote ((sequence "TODO(t)" "NEXT(n)" "STARTED(s)" "|" "DONE(d!/!)")
               (sequence "WAITING(w@/@)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "CALL(p)"))))
 
+(setq org-capture-templates
+      '(("q" "Todo" entry (file+headline org-capture-task-file "Tasks")
+	 "* TODO %?\n  %i\n  %a")
+	("c" "Call" entry (file+datetree org-capture-call-file)
+	 "* %?\nEntered on %U\n  %i\n  %a")))
+
 ;; Resume clocking tasks when emacs is restarted
 (org-clock-persistence-insinuate)
 ;; Resume clocking task on clock-in if the clock is open
