@@ -19,12 +19,11 @@
 
 ;; Load paths
 (let ((default-directory "~/.emacs.d/config/"))
-  (normal-top-level-add-to-load-path '("." "../packages/matlab-emacs" "../packages/ensime_2.10.0-0.9.8.9/elisp")))
-;; if these packages are not present just comment matlab-mode out
+  (normal-top-level-add-to-load-path '(".")))
 
 ;; Packages
 (defvar sys-packages
-  '(auctex auto-complete smartparens yasnippet markdown-mode less-css-mode coffee-mode egg elpy scala-mode2)
+  '(auctex auto-complete smartparens yasnippet markdown-mode less-css-mode coffee-mode egg elpy scala-mode2 ensime ox-reveal)
   "List of packages installed via packages system from elpa and melpa.")
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
@@ -96,12 +95,13 @@
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
 ;;;;;;;;;;;;;;;;;;;;
-;; Matlab-mode
-;(require 'matlab-load)
-
-;;;;;;;;;;;;;;;;;;;;
 ;; org-pandoc
 ;(require 'ox-pandoc)
+
+;;;;;;;;;;;;;;;;;;;;
+;; org-reveal
+(require 'ox-reveal)
+(setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/2.5.0/")
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Python
@@ -114,10 +114,6 @@
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
 (add-to-list 'auto-mode-alist '("\\.html.org\\'" . org-mode))
-
-;;;;;;;;;;;;;;;;;;;;
-;; ESS
-;(require 'ess-site)
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Autocomplete

@@ -7,3 +7,6 @@ org-clock-save.el
 *~
 .org-id-locations
 packages/matlab-emacs
+bookmarks
+ido.last
+server

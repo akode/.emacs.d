@@ -12,7 +12,11 @@
       '(("q" "Todo" entry (file+headline org-capture-task-file "Tasks")
 	 "* TODO %?\n  %i\n  %a")
 	("c" "Call" entry (file+datetree org-capture-call-file)
-	 "* %?\nEntered on %U\n  %i\n  %a")))
+	 "* %? on %U\n  %i\n  %a")))
+
+(setq user-full-name "Dr. Andreas Kodewitz")
+(setq user-mail-address "")
+
 
 ;; Resume clocking tasks when emacs is restarted
 (org-clock-persistence-insinuate)
