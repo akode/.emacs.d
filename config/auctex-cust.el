@@ -1,4 +1,5 @@
 (setq LaTeX-command "latex --synctex=1")
+(setq latex-run-command "pdflatex")
 (setq TeX-parse-self t)
 (setq TeX-auto-save t)
 (setq-default TeX-master nil)

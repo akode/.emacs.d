@@ -23,7 +23,7 @@
 
 ;; Packages
 (defvar sys-packages
-  '(auctex auto-complete smartparens yasnippet markdown-mode less-css-mode coffee-mode egg elpy scala-mode2 ensime ox-reveal)
+  '(auctex auto-complete smartparens yasnippet markdown-mode less-css-mode coffee-mode egg elpy scala-mode2 ox-reveal)
   "List of packages installed via packages system from elpa and melpa.")
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
@@ -91,8 +91,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Ensime/Scala
-(autoload 'ensime "ensime" "Ensime Scala mode." t)
-(add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
+;(autoload 'ensime "ensime" "Ensime Scala mode." t)
+;(add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; org-pandoc
@@ -167,7 +167,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; AucTeX
-(setq TeX-PDF-mode t)
+(require 'tex-site)
+(setq-default TeX-PDF-mode t)
+;; (setq-default TeX-show-compilation t)
 (setq TeX-auto-global "~/emacs-files/auto")
 (load "auctex-cust")
 
