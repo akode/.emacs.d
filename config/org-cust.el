@@ -12,7 +12,7 @@
       '(("q" "Todo" entry (file+headline org-capture-task-file "Tasks")
 	 "* TODO %?\n  %i\n  %a")
 	("c" "Call" entry (file+datetree org-capture-call-file)
-	 "* %? on %U\n  %i\n  %a")))
+	 "* %? on %U\n  %i\n  %a" :clock-in t :clock-resume t)))
 
 (setq user-full-name "Dr. Andreas Kodewitz")
 (setq user-mail-address "")
