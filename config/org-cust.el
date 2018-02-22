@@ -1,6 +1,15 @@
 (add-hook 'org-mode-hook (lambda ()
 			   (define-key org-mode-map (kbd "C-c g") 'omlg-grab-link)))
 (add-hook 'message-mode-hook 'orgtbl-mode 'append)
+
+;; org-zotxt settings
+(add-hook 'org-mode-hoook (lambda () (org-zotxt-mode 1)))
+(add-hook 'org-mode-hook (lambda ()
+			   (define-key org-mode-map (kbd "C-c i") (lambda () (interactive) (org-zotxt-insert-reference-link '(4))))))
+(eval-after-load "zotxt"
+  '(setq zotxt-default-bibliography-style "mkbehr-short"))
+
+
 (setq org-treat-S-cursor-todo-selection-as-state-change nil)
 (setq org-log-done 'time)
 

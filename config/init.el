@@ -23,12 +23,14 @@
 
 ;; Packages
 (defvar sys-packages
-  '(auctex auto-complete smartparens yasnippet markdown-mode less-css-mode coffee-mode egg elpy scala-mode2 ox-reveal)
+  '(auctex auto-complete smartparens yasnippet markdown-mode less-css-mode coffee-mode egg elpy ox-reveal zotxt)
   "List of packages installed via packages system from elpa and melpa.")
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
 			  ("melpa" . "http://melpa.milkbox.net/packages/")
-			  ("SC"   . "http://joseito.republika.pl/sunrise-commander/")))
+			  ("SC"   . "http://joseito.republika.pl/sunrise-commander/")
+			  ("org" . "https://orgmode.org/elpa/")))
+
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
@@ -100,13 +102,13 @@
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; org-reveal
-(require 'ox-reveal)
-(setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/2.5.0/")
+;;(require 'ox-reveal)
+;;(setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/2.5.0/")
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Python
 (elpy-enable)
-(elpy-use-ipython)
+;;(elpy-use-ipython)
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Markdown mode
